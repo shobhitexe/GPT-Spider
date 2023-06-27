@@ -1,5 +1,7 @@
 import { Page, ElementHandle } from "puppeteer";
 
+let counter: number = 2;
+
 export const writePrompt = async (prompt: string, page: Page) => {
   if (!page) {
     throw new Error("Page object not initialized.");
@@ -23,14 +25,18 @@ export const writePrompt = async (prompt: string, page: Page) => {
   await page.waitForNetworkIdle({ idleTime: 5000 });
 
   const response = await page.$x(
-    `//*[@id="__next"]/div[1]/div/div/main/div[2]/div/div/div/div[2]/div/div[2]/div[1]/div/div`
+    `//*[@id="__next"]/div[1]/div/div/main/div[2]/div/div/div/div[${counter}]/div/div[2]/div[1]/div/div/p`
   );
+
+  //*[@id="__next"]/div[1]/div/div/main/div[2]/div/div/div/div[4]/div/div[2]/div[1]/div/div/p
 
   if (response && response.length > 0) {
     const innerHTMLProperty = await response[0].getProperty("textContent");
     const responseContent = await innerHTMLProperty.jsonValue();
 
     const stringifyResponse = String(responseContent);
+
+    counter += 2;
 
     return stringifyResponse;
   } else {
